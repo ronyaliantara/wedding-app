@@ -1,9 +1,9 @@
-const CACHE_NAME = 'mahligai-wo-pwa-v20';
+const CACHE_NAME = 'mahligai-wo-pwa-v21';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './css/style.css?v=20',
-  './js/app.js?v=20',
+  './css/style.css?v=21',
+  './js/app.js?v=21',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'
