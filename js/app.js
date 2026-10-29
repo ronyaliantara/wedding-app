@@ -3781,7 +3781,11 @@ Chat WA Admin: https://wa.me/${cleanAdminPhone}
     }
 
     const check = verifyTimedLicense(lic.buyerPhone, lic.licenseKey);
-    this.headerLicenseBadge.style.display = 'inline-block';
+    this.headerLicenseBadge.style.display = 'inline-flex';
+    this.headerLicenseBadge.style.alignItems = 'center';
+    this.headerLicenseBadge.style.justifyContent = 'center';
+    this.headerLicenseBadge.style.whiteSpace = 'nowrap';
+    this.headerLicenseBadge.style.flexShrink = '0';
 
     if (check.isLifetime) {
       this.headerLicenseBadge.style.background = '#DCFCE7';

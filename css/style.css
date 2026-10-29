@@ -143,7 +143,6 @@ body {
 .header-top-bar {
   display: flex;
   align-items: center;
-  order: 1;
 }
 
 .brand {
@@ -198,7 +197,6 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  order: 2;
 }
 
 .nav-item-btn {
@@ -253,13 +251,34 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  order: 4;
 }
 
 .user-access-right {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+#headerLicenseBadge {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 800;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+#headerLicenseBadge:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Notification Bell & Dropdown */
@@ -2399,6 +2418,7 @@ body {
 
   /* Row 1: Brand & Top Action Icons */
   .header-top-bar {
+    order: 1 !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2463,6 +2483,7 @@ body {
 
   /* Row 2: Segmented Full-Width Nav Switcher */
   .main-nav {
+    order: 2 !important;
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -2470,6 +2491,7 @@ body {
     background-color: var(--bg-surface-alt);
     padding: 4px;
     border-radius: 12px;
+    margin: 2px 0;
   }
 
   .nav-item-btn {
@@ -2492,15 +2514,17 @@ body {
 
   /* Row 3: Slim User Info Strip */
   .user-access-wrapper {
+    order: 3 !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.02) 100%);
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    border-radius: 10px;
-    padding: 6px 12px;
+    background: #FFFFFF;
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    border-radius: 12px;
+    padding: 6px 10px;
     width: 100%;
-    gap: 8px;
+    gap: 6px;
   }
 
   .user-role-pill {
@@ -2508,41 +2532,63 @@ body {
     border: none;
     padding: 0;
     box-shadow: none;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
   }
 
   .user-role-icon {
     font-size: 1rem;
+    flex-shrink: 0;
   }
 
   .user-role-title {
     font-size: 0.78rem;
     font-weight: 800;
     color: var(--ink-primary);
-  }
-
-  .user-role-sub {
-    font-size: 0.68rem;
-    color: var(--gold-dark);
-    max-width: 180px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
+  /* Hide repetitive subtitle on mobile so row stays slim and spacious */
+  .user-role-sub {
+    display: none !important;
+  }
+
   .user-access-right {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .user-access-right #headerLicenseBadge {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    padding: 4px 8px !important;
+    border-radius: 20px !important;
+    line-height: 1.2 !important;
   }
 
   .user-access-right .btn {
-    padding: 4px 10px;
-    font-size: 0.75rem;
+    padding: 4px 9px;
+    font-size: 0.72rem;
     min-height: 30px;
     border-radius: 14px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
   }
 
   /* Notification Bell & Dropdown on Mobile */
@@ -2710,8 +2756,12 @@ body {
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     gap: 6px;
-    padding: 4px;
+    padding: 4px 6px;
     width: 100%;
+    background-color: var(--bg-surface-alt);
+    border-radius: 12px;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
   }
 
   .tabs-filter::-webkit-scrollbar {
@@ -2720,9 +2770,41 @@ body {
 
   .tab-btn {
     flex-shrink: 0;
-    padding: 8px 12px;
+    scroll-snap-align: start;
+    padding: 8px 13px;
     font-size: 0.8rem;
+    font-weight: 600;
     min-height: 40px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--ink-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+  }
+
+  .tab-btn.active {
+    background-color: #FFFFFF;
+    color: var(--gold-dark);
+    border-color: rgba(212, 175, 55, 0.28);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    font-weight: 700;
+  }
+
+  .tab-btn .tab-count {
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--ink-muted);
+    font-weight: 700;
+  }
+
+  .tab-btn.active .tab-count {
+    background-color: var(--gold-100);
+    color: var(--gold-dark);
   }
 
   .search-filter-box {
