@@ -4625,6 +4625,22 @@ Chat WA Admin: https://wa.me/${cleanAdminPhone}
         if (this.iosInstallModal) this.iosInstallModal.classList.remove('active');
       });
     }
+
+    const btnCopyLink = document.getElementById('btnCopyPwaLinkModal');
+    if (btnCopyLink) {
+      btnCopyLink.addEventListener('click', () => {
+        const url = 'https://ronyaliantara.github.io/wedding-app/';
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(() => {
+            this.showToast('📋 Tautan aplikasi berhasil disalin! Silakan buka di HP Anda.', 'success');
+          }).catch(() => {
+            this.copyToClipboard(url, '📋 Tautan aplikasi berhasil disalin! Silakan buka di HP Anda.');
+          });
+        } else {
+          this.copyToClipboard(url, '📋 Tautan aplikasi berhasil disalin! Silakan buka di HP Anda.');
+        }
+      });
+    }
   }
 
   escapeHtml(str) {

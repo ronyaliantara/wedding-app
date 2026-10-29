@@ -1140,7 +1140,7 @@
           <span>📱 Kontak Admin WA</span>
         </button>
         <button type="button" class="owner-tab-btn" id="tabBtnSecuritySettings" data-panel="panelSecuritySettings">
-          <span>🔒 Password Akun</span>
+          <span>📦 Cadangkan Data</span>
         </button>
         <button type="button" class="owner-tab-btn" id="tabBtnLicenseSettings" data-panel="panelLicenseSettings">
           <span>📜 Status Lisensi Pro</span>
@@ -1304,56 +1304,47 @@
           </div>
         </div>
 
-        <!-- ================= SEKSI 3: SECURITY / PASSWORD ================= -->
+        <!-- ================= SEKSI 3: BACKUP & RESTORE DATA ================= -->
         <div class="admin-section-divider-title" id="anchorSecurity" style="margin-top:32px; padding-top:22px; border-top:2px dashed #CBD5E1;">
-          <span>🔒 3. KEAMANAN &amp; KATA SANDI AKUN</span>
+          <span>📦 3. CADANGKAN &amp; PINDAHKAN DATA (LAPTOP ⇄ HP)</span>
         </div>
         <div class="owner-panel" id="panelSecuritySettings">
+          <!-- Info Proteksi Lisensi Resmi -->
+          <div style="background:#F0FDF4; border:1.5px solid #86EFAC; border-radius:12px; padding:14px; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <span style="font-size:1.25rem;">🛡️</span>
+              <strong style="color:#166534; font-size:0.92rem;">Aplikasi Terproteksi Sistem Lisensi Resmi</strong>
+            </div>
+            <p style="margin:0; font-size:0.82rem; color:#15803D; line-height:1.45;">
+              Aplikasi ini diamankan secara otomatis oleh <strong>Sistem Lisensi Digital</strong> (Nomor WhatsApp Terdaftar &amp; Kode Lisensi Unik). Anda tidak perlu menghafal kata sandi/password akun karena akses hanya bisa dibuka oleh lisensi resmi yang aktif.
+            </p>
+          </div>
+
+          <!-- Backup & Restore Data Card -->
           <div style="background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:12px; padding:18px;">
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-              <div style="font-size:1.4rem;">🔒</div>
+              <div style="font-size:1.4rem;">💾</div>
               <div>
-                <h4 style="font-size:0.95rem; font-weight:800; color:var(--ink-primary); margin:0;">Ganti Password Akun Masuk</h4>
-                <p style="font-size:0.78rem; color:var(--ink-secondary); margin:2px 0 0 0;">Password ini digunakan untuk mengamankan dan membuka kunci aplikasi.</p>
+                <h4 style="font-size:0.95rem; font-weight:800; color:var(--ink-primary); margin:0;">Pindahkan &amp; Cadangkan Data WO</h4>
+                <p style="font-size:0.78rem; color:var(--ink-secondary); margin:2px 0 0 0;">Sinkronkan seluruh jadwal acara, master kru, kontak admin, dan identitas brand antara laptop dan smartphone Anda dengan mudah.</p>
               </div>
             </div>
 
-            <div class="form-group" style="margin-bottom:12px;">
-              <label for="inputNewOwnerPassword" class="form-label">Password Baru:</label>
-              <input type="password" id="inputNewOwnerPassword" class="form-control" placeholder="Minimal 4 karakter">
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+              <button type="button" class="btn btn-outline-gold" id="btnExportDataBackup" style="width:100%; justify-content:center; min-height:44px; font-weight:700;">
+                <span>💾 Unduh Cadangan Data (.json)</span>
+              </button>
+              
+              <label class="btn btn-secondary" style="width:100%; justify-content:center; min-height:44px; font-weight:700; cursor:pointer; margin:0; display:inline-flex; align-items:center;">
+                <span>📥 Pulihkan Data dari Cadangan (.json)</span>
+                <input type="file" id="inputImportDataBackup" accept=".json,application/json" style="display:none;">
+              </label>
             </div>
 
-            <div class="form-group" style="margin-bottom:14px;">
-              <label for="inputConfirmOwnerPassword" class="form-label">Ulangi Password Baru:</label>
-              <input type="password" id="inputConfirmOwnerPassword" class="form-control" placeholder="Ketik ulang password baru">
+            <div style="font-size:0.78rem; color:var(--gold-dark); margin-top:12px; padding:10px; background:#FEF3C7; border-radius:8px; line-height:1.45;">
+              💡 <strong>Cara Pindah ke HP:</strong> Klik <em>"Unduh Cadangan Data"</em> di laptop &rarr; kirim file <code>.json</code> ke WhatsApp nomor sendiri &rarr; buka aplikasi di HP &rarr; pilih <em>"Pulihkan Data dari Cadangan"</em>. Seluruh data acara langsung tersinkronisasi!
             </div>
-
-            <button type="button" class="btn btn-primary" id="btnSaveNewOwnerPassword" style="width:100%; min-height:44px; justify-content:center; font-weight:700;">
-              Simpan Password Baru
-            </button>
-
-            <!-- Backup & Restore Data (Laptop ⇄ Smartphone Sync) -->
-            <div style="margin-top:20px; padding-top:16px; border-top:1.5px dashed #CBD5E1;">
-              <h5 style="font-size:0.9rem; font-weight:800; color:var(--ink-primary); margin:0 0 4px 0; display:flex; align-items:center; gap:6px;">
-                <span>📦</span> <span>Pindahkan &amp; Cadangkan Data (Laptop ⇄ HP)</span>
-              </h5>
-              <p style="font-size:0.78rem; color:var(--ink-secondary); margin:0 0 10px 0; line-height:1.4;">
-                Gunakan fitur ini untuk memindahkan seluruh data acara, daftar kru, admin, dan identitas brand antara laptop dan smartphone Anda.
-              </p>
-
-              <div style="display:flex; flex-wrap:wrap; gap:10px;">
-                <button type="button" class="btn btn-outline-gold btn-sm" id="btnExportDataBackup" style="flex:1; justify-content:center; min-height:40px; font-weight:700;">
-                  <span>💾 Cadangkan Data (.json)</span>
-                </button>
-                <label class="btn btn-secondary btn-sm" style="flex:1; justify-content:center; min-height:40px; font-weight:700; cursor:pointer; margin:0; display:inline-flex; align-items:center;">
-                  <span>📥 Pulihkan Data (.json)</span>
-                  <input type="file" id="inputImportDataBackup" accept=".json,application/json" style="display:none;">
-                </label>
-              </div>
-              <div style="font-size:0.75rem; color:var(--gold-dark); margin-top:8px; line-height:1.4;">
-                💡 <strong>Cara Pakai:</strong> Klik <em>"Cadangkan Data"</em> di laptop, kirim file <code>.json</code> ke WhatsApp HP sendiri, lalu buka aplikasi di HP dan pilih <em>"Pulihkan Data"</em>.
-              </div>
-            </div>
+          </div>
 
             <!-- Factory Reset / Clean Scratch Option -->
             <div style="margin-top:20px; padding-top:16px; border-top:1px dashed #E2E8F0;">
@@ -1402,38 +1393,54 @@
         <button type="button" class="btn-close" id="btnCloseIosInstallModal" aria-label="Tutup">&times;</button>
       </div>
       <div class="modal-body" style="line-height: 1.6; font-size: 0.92rem; color: var(--ink-secondary);">
-        <!-- Akses Beda Jaringan Notice -->
+        <!-- Active App Link & Quick Share -->
         <div style="background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
-          <strong style="color: #166534; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-            <span>🌐</span> <span>Bisa Diakses dari Mana Saja (Beda Jaringan / Paket Data):</span>
+          <strong style="color: #166534; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 0.9rem;">
+            <span>🌐</span> <span>Tautan Resmi Aplikasi (Buka di Browser HP):</span>
           </strong>
-          <p style="margin: 0; font-size: 0.82rem; color: #15803D;">
-            Aplikasi ini sudah berstandar PWA resmi. Anda dapat meng-hosting folder ini secara <strong>gratis &amp; permanen</strong> di <em>Netlify Drop, Vercel, atau GitHub Pages</em>, atau gunakan file <code>Buka_Akses_Online_HP.bat</code> di laptop untuk mendapatkan tautan HTTPS langsung!
-          </p>
+          <div style="display: flex; align-items: center; background: #FFFFFF; border: 1px solid #BBF7D0; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px;">
+            <code style="font-size: 0.85rem; color: #15803D; font-weight: 700; word-break: break-all; flex: 1;">https://ronyaliantara.github.io/wedding-app/</code>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-outline-gold btn-sm" id="btnCopyPwaLinkModal" style="flex: 1; justify-content: center; min-height: 38px; font-weight: 700;">
+              <span>📋 Salin Link HP</span>
+            </button>
+            <a href="https://wa.me/?text=Halo%2C%20ini%20tautan%20aplikasi%20Mahligai%20Wedding%20Organizer%20untuk%20dipasang%20di%20HP%3A%20https%3A%2F%2Fronyaliantara.github.io%2Fwedding-app%2F" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" style="flex: 1; justify-content: center; min-height: 38px; font-weight: 700; text-decoration: none;">
+              <span>💬 Kirim ke WhatsApp</span>
+            </a>
+          </div>
         </div>
 
+        <!-- Android Chrome Guide -->
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+          <strong style="color: var(--ink-primary); display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 0.88rem;">
+            <span>🤖</span> <span>Untuk Pengguna Android (Google Chrome):</span>
+          </strong>
+          <ol style="margin: 0; padding-left: 20px; font-size: 0.84rem; line-height: 1.55;">
+            <li>Buka link aplikasi di browser <strong>Google Chrome</strong> di HP Anda.</li>
+            <li>Jika muncul banner di bawah layar, langsung ketuk <strong>"Pasang Aplikasi" (Install)</strong>.</li>
+            <li>Atau ketuk menu titik tiga (<strong>⋮</strong>) di sudut kanan atas Chrome, lalu pilih <strong>"Pasang aplikasi"</strong> (atau <em>"Tambahkan ke Layar Utama"</em>).</li>
+            <li>Aplikasi langsung terpasang di menu HP layaknya aplikasi Play Store!</li>
+          </ol>
+        </div>
+
+        <!-- iPhone Safari Guide -->
         <div style="background: var(--gold-50); border: 1px solid var(--gold-200); border-radius: 12px; padding: 14px; margin-bottom: 14px;">
-          <strong style="color: var(--gold-dark); display: block; margin-bottom: 6px;">📱 Untuk Pengguna iPhone (Apple Safari):</strong>
-          <ol style="margin: 0; padding-left: 20px; font-size: 0.85rem;">
+          <strong style="color: var(--gold-dark); display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 0.88rem;">
+            <span>🍎</span> <span>Untuk Pengguna iPhone (Apple Safari):</span>
+          </strong>
+          <ol style="margin: 0; padding-left: 20px; font-size: 0.84rem; line-height: 1.55;">
             <li>Buka link aplikasi di browser <strong>Safari</strong> (bukan Chrome di iOS).</li>
-            <li>Ketuk tombol <strong>Bagikan / Share</strong> (ikon kotak dengan panah ke atas <span style="font-size: 1.1rem;">⎋</span>) di bagian bawah layar.</li>
-            <li>Geser menu ke bawah dan pilih <strong>"Tambah ke Layar Utama" (Add to Home Screen)</strong> ➕.</li>
-            <li>Ketuk <strong>"Tambah"</strong> di sudut kanan atas. Ikon aplikasi langsung muncul di layar depan iPhone Anda!</li>
+            <li>Ketuk tombol <strong>Bagikan / Share</strong> (ikon kotak dengan panah ke atas <span style="font-size: 1.1rem;">⎋</span>) di bilah bawah Safari.</li>
+            <li>Geser ke bawah dan pilih <strong>"Tambah ke Layar Utama" (Add to Home Screen)</strong> ➕.</li>
+            <li>Ketuk <strong>"Tambah"</strong> di sudut kanan atas. Ikon aplikasi langsung tampil di beranda iPhone Anda!</li>
           </ol>
         </div>
 
-        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 14px;">
-          <strong style="color: var(--ink-primary); display: block; margin-bottom: 6px;">🤖 Untuk Pengguna Android (Google Chrome):</strong>
-          <ol style="margin: 0; padding-left: 20px; font-size: 0.85rem;">
-            <li>Buka link aplikasi di browser <strong>Google Chrome</strong>.</li>
-            <li>Ketuk pop-up <strong>"Pasang aplikasi" (Install app)</strong> yang otomatis muncul di bawah.</li>
-            <li>Atau ketuk ikon titik tiga (<strong>⋮</strong>) di sudut kanan atas Chrome, lalu pilih <strong>"Pasang aplikasi"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.</li>
-          </ol>
-        </div>
-
+        <!-- PWA Benefits -->
         <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 12px; display: flex; align-items: flex-start; gap: 8px; font-size: 0.82rem; color: #B45309;">
-          <span style="font-size: 1.1rem;">💡</span>
-          <span><strong>100% Offline Tanpa Kuota:</strong> Setelah terpasang, aplikasi tetap dapat dibuka dan digunakan dengan lancar di HP meski tidak ada sinyal internet.</span>
+          <span style="font-size: 1.1rem; line-height: 1;">✨</span>
+          <span><strong>100% Layar Penuh &amp; Offline:</strong> Setelah terpasang, aplikasi terbuka fullscreen tanpa bilah browser dan tetap dapat digunakan meski tidak ada sinyal internet.</span>
         </div>
       </div>
       <div class="modal-footer">
