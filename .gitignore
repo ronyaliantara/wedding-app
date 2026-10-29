@@ -1,0 +1,14 @@
+# Exclude license generator from public repository
+generator-lisensi-admin.html
+Buka_Generator_Lisensi_Admin.bat
+
+# Exclude zip distributions
+*.zip
+*.tar.gz
+*.rar
+
+# Exclude OS & editor cache
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

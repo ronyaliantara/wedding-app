@@ -1,0 +1,87 @@
+================================================================================
+💍 PANDUAN PENGGUNAAN & CARA INSTALASI APLIKASI MAHLIGAI WEDDING ORGANIZER 💍
+================================================================================
+
+Selamat datang! Terima kasih telah memiliki Aplikasi Sistem Manajemen Wedding 
+Organizer (WO) Profesional ini.
+
+Aplikasi ini 100% Offline, tanpa biaya langganan bulanan, dan privasi data 
+tersimpan aman di perangkat Anda sendiri.
+
+--------------------------------------------------------------------------------
+🔑 TAHAP AWAL: LOGIN LISENSI RESMI
+--------------------------------------------------------------------------------
+Saat pertama kali membuka aplikasi di laptop atau smartphone Anda, layar 
+"Login Lisensi Pengguna" akan muncul:
+
+1. Masukkan NOMOR WHATSAPP TERDAFTAR Anda (nomor HP yang didaftarkan ke admin/penjual).
+2. Masukkan KODE LISENSI RESMI yang dikirimkan oleh admin/penjual
+   (Format: MWO-XXXX-XXXX-XXXX-XXXX).
+3. Masukkan Nama WO Anda (Opsional).
+4. Klik tombol: "🔓 Masuk ke Aplikasi".
+5. Selesai! Aplikasi langsung terbuka dan aktif sesuai durasi paket Anda 
+   (1 Bulan, 1 Tahun, atau Selamanya tanpa batas).
+
+--------------------------------------------------------------------------------
+💻 CARA 1: PENGGUNAAN DI LAPTOP / KOMPUTER (WINDOWS)
+--------------------------------------------------------------------------------
+1. Ekstrak (Unzip) seluruh isi file ZIP ini ke folder pilihan Anda di laptop.
+2. Buka folder hasil ekstrak.
+3. Klik 2x file bernama: "Buka_Aplikasi.bat".
+4. Aplikasi akan otomatis terbuka di browser favorit Anda (Chrome / Edge / Firefox).
+5. Masukkan Kode Lisensi Anda ➔ Aplikasi langsung aktif!
+   (Jendela hitam kecil yang muncul dapat diminimalkan/dibiarkan berjalan di background).
+
+--------------------------------------------------------------------------------
+📱 CARA 2: INSTALASI DI IPHONE (APPLE iOS - SAFARI)
+--------------------------------------------------------------------------------
+Agar aplikasi bisa diinstal permanen menjadi ikon aplikasi di layar depan iPhone 
+dan bisa dibuka dari mana saja (4G/5G/Offline):
+
+Langkah Mudah (Hanya 1 Menit, 100% Gratis Selamanya):
+1. Buka browser di laptop, kunjungi: https://app.netlify.com/drop
+2. Tarik & Lepas (Drag and Drop) folder aplikasi ini ke kotak Netlify Drop.
+3. Tunggu 10-20 detik, Anda langsung mendapatkan link HTTPS resmi gratis 
+   (Contoh: https://wo-saya.netlify.app atau nama kustom pilihan Anda).
+4. Buka link tersebut di iPhone Anda menggunakan browser SAFARI (wajib Safari).
+5. Masukkan Kode Lisensi Anda ➔ Aplikasi aktif!
+6. Ketuk tombol BAGIKAN / SHARE (ikon kotak dengan panah ke atas di bagian bawah layar).
+7. Gulir menu ke bawah dan pilih: "Tambah ke Layar Utama" (Add to Home Screen) ➕.
+8. Ketuk "Tambah" di pojok kanan atas.
+9. SELESAI! Ikon aplikasi WO Anda langsung muncul di layar utama iPhone Anda 
+   dan dapat dibuka kapan pun tanpa kuota internet!
+
+--------------------------------------------------------------------------------
+🤖 CARA 3: INSTALASI DI ANDROID (GOOGLE CHROME)
+--------------------------------------------------------------------------------
+1. Buka link aplikasi melalui browser GOOGLE CHROME di HP Android Anda.
+2. Masukkan Kode Lisensi Anda ➔ Aplikasi aktif!
+3. Di dalam aplikasi, ketuk tombol emas bertuliskan "Pasang di HP" di bagian atas.
+4. Atau ketuk ikon titik tiga (⋮) di pojok kanan atas Chrome, lalu pilih:
+   "Pasang aplikasi" atau "Tambahkan ke Layar Utama" (Add to Home Screen).
+5. Ketuk "Instal".
+6. SELESAI! Aplikasi kini terpasang seperti aplikasi Android resmi dari Play Store 
+   dan berjalan 100% offline di lapangan.
+
+--------------------------------------------------------------------------------
+⚙️ PENGATURAN PERTAMA KALI (GANTI NAMA WO & LOGO ANDA):
+--------------------------------------------------------------------------------
+1. Klik tombol "Pengaturan Admin" (ikon gerigi emas di pojok kanan atas).
+2. Di tab "🎨 Identitas & Logo":
+   - Masukkan Nama Lengkap Wedding Organizer Anda.
+   - Masukkan Nama Singkat & Slogan.
+   - Unggah gambar logo WO Anda atau pilih ikon cepat.
+   - Klik "Simpan Identitas & Logo".
+3. Di tab "📱 Kontak Admin WA":
+   - Daftarkan nomor WhatsApp Admin 1 Anda.
+   (Nomor ini otomatis tercantum di surat tugas WA kru & kop laporan PDF).
+4. Aplikasi siap dipakai penuh! Klik "+ Acara Baru" untuk memasukkan jadwal klien Anda.
+
+--------------------------------------------------------------------------------
+📦 CARA SINKRONISASI DATA (PINDAHKAN DATA LAPTOP ⇄ HP):
+--------------------------------------------------------------------------------
+- Di Laptop: Masuk ke Pengaturan Admin > klik "Cadangkan Data (.json)".
+- Kirim file cadangan .json tersebut ke WhatsApp Anda sendiri, lalu unduh di HP.
+- Di HP: Buka aplikasi di HP > Pengaturan Admin > klik "Pulihkan Data (.json)".
+- Seluruh daftar acara, kru, checklist, dan status lisensi langsung berpindah ke HP Anda seketika!
+================================================================================

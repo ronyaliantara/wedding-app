@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>Mahligai WO — Sistem Manajemen Acara Pernikahan</title>
+  <meta name="description" content="Aplikasi manajemen wedding organizer: hitung mundur H-n, database master kru, lokasi Google Maps otomatis, kirim rekap WA personal kru, checklist progres, dan notifikasi H-3.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- PWA Manifest & Mobile Icons for iPhone & Android -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#92400E">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Mahligai WO">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+</head>
+<body>
+  <!-- ==================== FULL-SCREEN LICENSE LOGIN SCREEN ==================== -->
+  <div class="license-portal-screen hidden" id="licensePortalScreen">
+    <div class="license-card-wrapper">
+      <div class="license-brand-header">
+        <div class="license-brand-crest">💍</div>
+        <h1 class="license-brand-title" id="licenseBrandTitle">Mahligai Wedding Organizer</h1>
+        <p class="license-brand-subtitle">Sistem Manajemen &amp; Koordinasi Acara Pernikahan</p>
+      </div>
+
+      <div class="license-card-box">
+        <div class="license-box-badge">🔑 Login Lisensi Pengguna</div>
+        <h2 class="license-box-title">Masuk ke Aplikasi</h2>
+        <p class="license-box-desc">
+          Silakan masukkan <strong>Nomor WhatsApp Terdaftar</strong> dan <strong>Kode Lisensi</strong> yang telah dikirimkan oleh admin/penjual untuk membuka aplikasi.
+        </p>
+
+        <form id="formLicenseActivation">
+          <div class="form-group" style="margin-bottom:12px;">
+            <label for="inputLicensePhone" class="form-label">Nomor WhatsApp Terdaftar <span class="required">*</span></label>
+            <input type="tel" id="inputLicensePhone" class="form-control" placeholder="Contoh: 081234567890" required autocomplete="tel">
+            <span style="font-size:0.75rem; color:var(--ink-secondary);">Nomor HP yang Anda daftarkan saat membeli lisensi</span>
+          </div>
+
+          <div class="form-group" style="margin-bottom:14px;">
+            <label for="inputLicenseKey" class="form-label">Kode Lisensi <span class="required">*</span></label>
+            <input type="text" id="inputLicenseKey" class="form-control license-key-input" placeholder="Contoh: MWO-1M-XXXX-XXXX-XXXX" required autocomplete="off" style="letter-spacing:1px; font-weight:700;">
+            <span style="font-size:0.75rem; color:var(--ink-secondary);">Kode lisensi paket 1 Bulan, 1 Tahun, atau Selamanya dari admin</span>
+          </div>
+
+          <div class="form-group" style="margin-bottom:14px;">
+            <label for="inputLicenseName" class="form-label">Nama Pemilik / Nama WO (Opsional)</label>
+            <input type="text" id="inputLicenseName" class="form-control" placeholder="Contoh: Sarah Wedding Organizer" autocomplete="name">
+          </div>
+
+          <div class="form-validation-alert hidden" id="licenseValidationAlert" style="margin-bottom:14px;"></div>
+
+          <button type="submit" class="btn btn-primary" id="btnActivateLicense" style="width:100%; justify-content:center; padding:13px; font-weight:700; font-size:0.95rem;">
+            <span>🔓 Masuk ke Aplikasi &rarr;</span>
+          </button>
+        </form>
+
+        <div class="license-buy-cta">
+          <div style="font-size:0.82rem; font-weight:700; color:var(--ink-primary); margin-bottom:4px;">Belum Punya Lisensi atau Ingin Perpanjang?</div>
+          <p style="font-size:0.75rem; color:var(--ink-secondary); margin:0 0 10px 0;">
+            Tersedia pilihan paket <strong>1 Bulan</strong>, <strong>1 Tahun</strong>, atau <strong>Selamanya (Permanen)</strong>. Hubungi admin resmi kami via WhatsApp:
+          </p>
+          <a href="https://wa.me/?text=Halo%20Admin%2C%20saya%20ingin%20membeli%20%2F%20memperpanjang%20Kode%20Lisensi%20Aplikasi%20Mahligai%20Wedding%20Organizer" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm" id="btnContactSellerLicense" style="width:100%; justify-content:center; text-decoration:none;">
+            <span>💬 Hubungi Admin via WhatsApp</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FULL-SCREEN AUTH PORTAL (LOGIN / REGISTER) ==================== -->
+  <div class="auth-portal-screen hidden" id="authPortalScreen">
+    <div class="auth-card-wrapper">
+      <div class="auth-brand-header">
+        <div class="auth-brand-crest" id="authBrandCrest">💍</div>
+        <h1 class="auth-brand-title" id="authBrandTitle">Mahligai Wedding Organizer</h1>
+        <p class="auth-brand-subtitle" id="authBrandSubtitle">Sistem Manajemen & Koordinasi Acara Pernikahan</p>
+      </div>
+
+      <!-- Mode 1: Registrasi Akun Owner Pertama Kali -->
+      <div class="auth-card-box" id="authRegisterBox">
+        <div class="auth-box-badge">✨ Buat Akun Pemilik (Owner)</div>
+        <h2 class="auth-box-title">Registrasi Akun Pertama Kali</h2>
+        <p class="auth-box-desc">Selamat datang! Silakan buat akun pemilik untuk masuk dan mengamankan aplikasi WO Anda.</p>
+
+        <form id="formOwnerRegister">
+          <div class="form-group" style="margin-bottom:12px;">
+            <label for="regOwnerName" class="form-label">Nama Pemilik / Nama WO <span class="required">*</span></label>
+            <input type="text" id="regOwnerName" class="form-control" placeholder="Contoh: Sarah Maharani (Mahligai WO)" required autocomplete="name">
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <label for="regOwnerPhone" class="form-label">Nomor WhatsApp Pemilik <span class="required">*</span></label>
+            <input type="tel" id="regOwnerPhone" class="form-control" placeholder="Contoh: 081234567890" required autocomplete="tel">
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px;">
+            <label for="regOwnerPassword" class="form-label">Buat Password / PIN Masuk <span class="required">*</span></label>
+            <div style="position:relative;">
+              <input type="password" id="regOwnerPassword" class="form-control" placeholder="Minimal 4 karakter" required autocomplete="new-password">
+              <button type="button" class="btn-toggle-eye" id="btnToggleRegEye" title="Lihat Password">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:14px;">
+            <label for="regOwnerPasswordConfirm" class="form-label">Konfirmasi Password <span class="required">*</span></label>
+            <input type="password" id="regOwnerPasswordConfirm" class="form-control" placeholder="Ketik ulang password" required autocomplete="new-password">
+          </div>
+
+          <div class="form-validation-alert hidden" id="regValidationAlert" style="margin-bottom:12px;"></div>
+
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px; font-weight:700;">
+            <span>Daftarkan Akun & Buka Aplikasi &rarr;</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Mode 2: Login Masuk Aplikasi (Jika Akun Sudah Ada) -->
+      <div class="auth-card-box hidden" id="authLoginBox">
+        <div class="auth-box-badge">🔒 Akses Masuk Aplikasi</div>
+        <h2 class="auth-box-title" id="authLoginGreeting">Masuk ke Aplikasi</h2>
+        <p class="auth-box-desc">Masukkan password akun Anda untuk melanjutkan ke aplikasi.</p>
+
+        <form id="formAppLogin">
+          <div class="form-group" style="margin-bottom:14px;">
+            <label for="loginPassword" class="form-label">Password Akun <span class="required">*</span></label>
+            <div style="position:relative;">
+              <input type="password" id="loginPassword" class="form-control" placeholder="Masukkan password Anda" required autocomplete="current-password">
+              <button type="button" class="btn-toggle-eye" id="btnToggleLoginEye" title="Lihat Password">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-validation-alert hidden" id="loginAppValidationAlert" style="margin-bottom:12px;"></div>
+
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px; font-weight:700;">
+            <span>Masuk ke Dashboard &rarr;</span>
+          </button>
+
+          <div style="text-align:center; margin-top:14px;">
+            <button type="button" class="btn-text-sm" id="btnResetOwnerAccount" style="color:var(--ink-secondary); font-size:0.8rem;">
+              🔄 Ingin buat ulang akun pemilik? Klik di sini
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="app-header" id="appHeader">
+    <div class="header-container">
+      
+      <!-- Top Row: Brand & Primary Actions -->
+      <div class="header-top-bar">
+        <div class="brand" id="brandHomeBtn" role="button" tabindex="0" title="Kembali ke Beranda">
+          <div class="brand-icon" id="headerBrandIcon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title" id="headerBrandTitle">Mahligai WO</span>
+            <span class="brand-subtitle" id="headerBrandSubtitle">Wedding Organizer Management</span>
+          </div>
+        </div>
+
+        <div class="header-top-actions">
+          <button type="button" class="btn btn-outline-gold btn-sm btn-header-admin" id="btnOpenOwnerPanel" title="Pengaturan Admin WO (Identitas Brand, Logo, Nomor WhatsApp Admin, & Keamanan)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span class="btn-text-full">Pengaturan Admin</span>
+            <span class="btn-text-short">Admin</span>
+          </button>
+
+          <!-- Notifikasi H-3 Bell -->
+          <div class="notification-wrapper">
+            <button type="button" class="btn-icon-circle" id="btnNotificationBell" title="Notifikasi Pengingat Acara H-3">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span class="notification-badge hidden" id="headerNotificationCount">0</span>
+            </button>
+
+            <!-- Dropdown Notifikasi H-3 -->
+            <div class="notification-dropdown hidden" id="notificationDropdown">
+              <div class="notif-header">
+                <span class="notif-title">Pemberitahuan Admin</span>
+                <button type="button" class="btn-text-sm" id="btnRequestWebNotif">Aktifkan Notif Laptop</button>
+              </div>
+              <div class="notif-body" id="notificationDropdownList">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-header-new-event" id="btnOpenNewEventModal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span class="btn-text-full">Acara Baru</span>
+            <span class="btn-text-short">Acara</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Row 2: Segmented Navigation Switcher: Acara vs Master Kru -->
+      <nav class="main-nav">
+        <button type="button" class="nav-item-btn active" id="navEventsBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Daftar Acara</span>
+        </button>
+        <button type="button" class="nav-item-btn" id="navMasterCrewBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span class="nav-label-full">Database Master Kru</span>
+          <span class="nav-label-short">Master Kru</span>
+          <span class="nav-badge" id="navMasterCrewCount">0</span>
+        </button>
+      </nav>
+
+      <!-- Row 3: User Info & Extra Controls -->
+      <div class="user-access-wrapper">
+        <div class="user-role-pill" id="userRolePill" title="Akun Terdaftar">
+          <span class="user-role-icon" id="userRoleIcon">👑</span>
+          <div class="user-role-info">
+            <span class="user-role-title" id="userRoleTitle">Owner</span>
+            <span class="user-role-sub" id="userRoleSub">Admin 1: Menyiapkan...</span>
+          </div>
+        </div>
+        <div class="user-access-right">
+          <span class="badge-mini" id="headerLicenseBadge" style="background:#FEF3C7; color:#92400E; font-weight:800; font-size:0.75rem; padding:4px 10px; border-radius:20px; border:1px solid #FDE68A; cursor:pointer;" title="Klik untuk lihat rincian lisensi">
+            ⏳ Lisensi
+          </span>
+          <button type="button" class="btn btn-gold-pill btn-sm" id="btnPwaInstall" title="Pasang aplikasi ini langsung di layar utama HP Anda">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+            <span class="btn-text-full">Pasang di HP</span>
+            <span class="btn-text-short">Pasang</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm hidden" id="btnToggleAuthModal" title="Keluar / Kunci Aplikasi">
+            <span id="labelAuthAction">🚪 Keluar</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-main" id="appMain">
+
+    <!-- URGENT H-3 ADMIN ALERT BANNER -->
+    <div class="h3-urgent-banner hidden" id="h3UrgentBanner">
+      <button type="button" class="btn-close-banner" id="btnCloseH3Banner" aria-label="Tutup pemberitahuan" title="Tutup pemberitahuan" onclick="window.__dismissH3Banner && window.__dismissH3Banner(event)">&times;</button>
+      <div class="h3-banner-main">
+        <div class="h3-banner-icon">🔔</div>
+        <div class="h3-banner-content">
+          <div class="h3-banner-title" id="h3BannerTitle">Perhatian Admin: Ada 1 Acara H-3 Hari!</div>
+          <div class="h3-banner-desc" id="h3BannerDesc">Segera konfirmasi kesiapan seluruh kru bertugas dan kirimkan rekap briefing bersama link lokasi Google Maps.</div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-warning-dark btn-sm btn-h3-action" id="btnViewH3Events">
+        <span>Lihat Acara Mendesak</span>
+      </button>
+    </div>
+    
+    <!-- ==================== VIEW 1: DAFTAR ACARA ==================== -->
+    <section id="viewListEvents" class="app-view active">
+      <div class="view-hero">
+        <div class="hero-content">
+          <div class="hero-badge">Ringkasan Jadwal & Koordinasi</div>
+          <h1 class="hero-title">Daftar Acara Pernikahan</h1>
+          <p class="hero-desc">Pantau hitung mundur Hari H, koordinasi kru vendor, dan progres checklist seluruh klien WO Anda.</p>
+        </div>
+        
+        <!-- Quick Metrics Bar -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Mendatang (Aktif)</div>
+            <div class="metric-value" id="metricUpcoming">0</div>
+            <div class="metric-sub" id="metricClosestEvent">Terdekat: -</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Acara Mendekati H-3</div>
+            <div class="metric-value" id="metricH3Count" style="color: #D97706;">0</div>
+            <div class="metric-sub">Perlu konfirmasi cepat</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Checklist Rata-rata</div>
+            <div class="metric-value" id="metricAvgProgress">0%</div>
+            <div class="metric-sub" id="metricCompletedTasks">0 tugas selesai</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Database Master Kru</div>
+            <div class="metric-value" id="metricMasterCrewTotal">0</div>
+            <div class="metric-sub">Kru siap ditugaskan</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter, Search & View Controls -->
+      <div class="list-controls-bar">
+        <div class="tabs-filter">
+          <button type="button" class="tab-btn active" data-filter="upcoming" id="tabUpcoming">
+            <span>Acara Mendatang</span>
+            <span class="tab-count" id="countUpcoming">0</span>
+          </button>
+          <button type="button" class="tab-btn" data-filter="h3" id="tabH3">
+            <span>Mendesak (≤ H-3)</span>
+            <span class="tab-count" id="countH3">0</span>
+          </button>
+          <button type="button" class="tab-btn" data-filter="archived" id="tabArchived">
+            <span>Arsip Acara Lewat</span>
+            <span class="tab-count" id="countArchived">0</span>
+          </button>
+          <button type="button" class="tab-btn" data-filter="all" id="tabAll">
+            <span>Semua</span>
+            <span class="tab-count" id="countAll">0</span>
+          </button>
+        </div>
+
+        <div class="search-filter-box">
+          <div class="search-input-wrapper" style="width: 100%; max-width: 380px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="inputSearchEvents" placeholder="Cari nama pasangan atau gedung...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Archive Banner & Purge Control -->
+      <div class="archive-action-banner hidden" id="archiveActionBanner">
+        <div class="archive-banner-text">
+          <span class="archive-banner-icon">📁</span>
+          <span><strong>Manajemen Arsip Acara:</strong> Anda dapat mengunduh dokumen PDF rekap acara yang telah selesai sebagai berkas fisik/digital, kemudian menghapus acara dari arsip agar memori penyimpanan aplikasi tetap ringan dan cepat.</span>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" id="btnClearAllArchived" title="Hapus permanen seluruh acara di arsip untuk melegakan penyimpanan browser">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          <span>Bersihkan Semua Arsip</span>
+        </button>
+      </div>
+
+      <!-- Event Cards Grid -->
+      <div class="events-grid" id="eventsGridContainer">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state hidden" id="eventsEmptyState">
+        <div class="empty-icon">💍</div>
+        <h3 class="empty-title">Belum ada acara pernikahan</h3>
+        <p class="empty-desc">Tekan tombol "Acara Baru" di atas untuk menambahkan jadwal dan mengelola detail pernikahan klien Anda.</p>
+        <button type="button" class="btn btn-primary" id="btnEmptyNewEvent">
+          <span>+ Tambah Acara Baru</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: DATABASE MASTER KRU ==================== -->
+    <section id="viewMasterCrew" class="app-view">
+      <div class="view-hero">
+        <div class="hero-content">
+          <div class="hero-badge">Direktori Tim & Vendor Sentral</div>
+          <h1 class="hero-title">Database Master Kru & Vendor</h1>
+          <p class="hero-desc">Daftar lengkap seluruh tim WO (admin, asisten, perias, fotografer, supir logistik gaun & makeup, MC, dll). Saat membuat acara baru, Anda tinggal centang pilih tanpa mengetik ulang!</p>
+        </div>
+
+        <div class="master-crew-actions-row">
+          <div class="search-input-wrapper" style="flex: 1; max-width: 360px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="inputSearchMasterCrew" placeholder="Cari nama kru, peran, atau no HP...">
+          </div>
+
+          <div class="role-filter-select-wrapper">
+            <select id="selectMasterRoleFilter" class="form-control">
+              <option value="ALL">Semua Peran / Jabatan</option>
+              <option value="Admin WO & Koordinator">Admin WO & Koordinator</option>
+              <option value="Asisten Lapangan / Runner">Asisten Lapangan / Runner</option>
+              <option value="Perias / MUA & Hairdo">Perias / MUA & Hairdo</option>
+              <option value="Fotografer & Video">Fotografer & Videografer</option>
+              <option value="Supir Logistik (Gaun & Makeup)">Supir Logistik (Gaun & Makeup)</option>
+              <option value="Supir Logistik (Hantaran & Sound)">Supir Logistik (Hantaran & Souvenir)</option>
+              <option value="MC (Master of Ceremony)">MC (Master of Ceremony)</option>
+              <option value="Dekorasi & Florist">Dekorasi & Florist</option>
+              <option value="Katering & F&B">Katering & F&B</option>
+              <option value="Sound & Akustik">Sound System & Musik</option>
+              <option value="Penghulu & KUA">Penghulu / Petugas KUA</option>
+              <option value="Busana & Wardrobe">Busana & Wardrobe</option>
+            </select>
+          </div>
+
+          <button type="button" class="btn btn-primary" id="btnOpenAddMasterCrewModal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>+ Tambah Anggota Kru Baru</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Master Crew Cards Grid -->
+      <div class="master-crew-grid" id="masterCrewGridContainer">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="empty-state hidden" id="masterCrewEmptyState">
+        <div class="empty-icon">👥</div>
+        <h3 class="empty-title">Belum ada anggota kru di database</h3>
+        <p class="empty-desc">Tambahkan tim kru WO Anda (perias, supir gaun, fotografer, admin, dll) agar dapat langsung dipilih ke setiap acara pernikahan.</p>
+        <button type="button" class="btn btn-primary" id="btnEmptyAddMasterCrew">+ Tambah Kru Pertama</button>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: HALAMAN DETAIL ACARA ==================== -->
+    <section id="viewDetailEvent" class="app-view">
+      <!-- Detail Breadcrumb / Nav -->
+      <div class="detail-top-nav">
+        <button type="button" class="btn btn-ghost" id="btnBackToList">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span class="btn-text-full">Kembali ke Daftar Acara</span>
+          <span class="btn-text-short">Kembali</span>
+        </button>
+
+        <div class="detail-header-quick-actions">
+          <button type="button" class="btn btn-secondary btn-sm" id="btnEditCurrentEvent">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            <span class="btn-text-full">Edit Data Acara</span>
+            <span class="btn-text-short">Edit Acara</span>
+          </button>
+
+          <button type="button" class="btn btn-secondary btn-sm" id="btnDownloadPdfCurrentEvent" title="Unduh Dokumen Laporan / Rekap PDF Resmi Acara">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <span>Unduh PDF</span>
+          </button>
+
+          <button type="button" class="btn btn-secondary btn-sm" id="btnToggleArchiveCurrentEvent">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="21 8 21 21 3 21 3 8"></polyline>
+              <rect x="1" y="3" width="22" height="5"></rect>
+              <line x1="10" y1="12" x2="14" y2="12"></line>
+            </svg>
+            <span id="labelToggleArchive">Arsipkan Acara</span>
+          </button>
+
+          <button type="button" class="btn btn-danger-outline btn-sm hidden" id="btnDeleteCurrentEvent" title="Hapus permanen acara ini dari arsip untuk melegakan memori aplikasi">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+            <span>Hapus Arsip</span>
+          </button>
+
+          <button type="button" class="btn btn-whatsapp btn-sm btn-rekap-crew-main" id="btnOpenBulkShareModal">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.953 1.18-.175.2-.351.226-.652.075-.301-.15-1.272-.469-2.423-1.496-.896-.799-1.501-1.786-1.677-2.087-.175-.301-.019-.464.132-.614.136-.135.301-.351.451-.527.151-.175.2-.301.301-.501.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.233-.244-.585-.492-.506-.677-.515-.175-.008-.376-.01-.577-.01-.2 0-.526.075-.802.376-.276.301-1.053 1.028-1.053 2.508 0 1.48 1.078 2.909 1.228 3.11.15.2 2.122 3.24 5.141 4.544.718.31 1.279.496 1.716.635.721.23 1.378.197 1.897.12.578-.087 1.78-.727 2.031-1.43.25-.702.25-1.304.175-1.43-.075-.125-.276-.2-.577-.35z"/>
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.17L2.05 21.95l4.908-1.332A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.2c-1.634 0-3.146-.46-4.433-1.258l-.317-.193-2.92.793.811-2.825-.213-.332A8.156 8.156 0 013.8 12c0-4.521 3.679-8.2 8.2-8.2s8.2 3.679 8.2 8.2-3.679 8.2-8.2 8.2z"/>
+            </svg>
+            <span class="btn-text-full">Kirim Rekap WA ke Semua Kru</span>
+            <span class="btn-text-short">⚡ Rekap WA Semua Kru</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Detail Hero Banner -->
+      <div class="detail-hero-banner" id="detailHeroBanner">
+        <div class="detail-hero-left">
+          <div class="detail-status-row">
+            <span class="countdown-badge large" id="detailCountdownBadge">H-0 Hari</span>
+            <span class="status-pill" id="detailStatusPill">Mendatang</span>
+          </div>
+          <h1 class="detail-couple-name" id="detailCoupleName">Nama Pasangan</h1>
+          <div class="detail-meta-list">
+            <div class="meta-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span id="detailEventDate" class="highlight-text">Tanggal Acara</span>
+            </div>
+            <div class="meta-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span id="detailLocationsHeaderSummary">Akad: <strong id="detailAkadTime">-</strong> | Resepsi: <strong id="detailResepsiTime">-</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-hero-right">
+          <div class="overall-progress-box">
+            <div class="op-header">
+              <span class="op-title">Kesiapan Acara</span>
+              <span class="op-percent" id="detailProgressPercent">0%</span>
+            </div>
+            <div class="progress-track large">
+              <div class="progress-bar-fill" id="detailProgressBar" style="width: 0%"></div>
+            </div>
+            <div class="op-sub" id="detailProgressRatio">0 dari 0 tugas selesai</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Workflow Grid (Lokasi, Kru, Checklist, Bagikan Info) -->
+      <div class="detail-sections-grid">
+        
+        <!-- ================= SECTION A: LOKASI ================= -->
+        <div class="detail-card location-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="card-icon-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+              </div>
+              <div>
+                <h2 class="card-title">A. Lokasi & Navigasi Maps Acara</h2>
+                <p class="card-subtitle">Daftar lokasi (Lokasi 1, Lokasi 2, dst) beserta waktu, tempat, alamat, dan navigasi GPS</p>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-secondary btn-sm" id="btnEditLocationsFromSection" title="Ubah atau tambah lokasi acara ini" style="font-weight:700; font-size:0.8rem; display:flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              <span>Edit Lokasi & Acara</span>
+            </button>
+          </div>
+
+          <div class="location-body">
+            <!-- Dynamic Multi-Locations List (Lokasi 1, 2, 3...) -->
+            <div id="detailLocationsList" class="location-list-container">
+              <!-- Rendered dynamically by renderLocationSection() -->
+            </div>
+
+            <div class="maps-hint-card">
+              <div class="hint-icon">💡</div>
+              <div class="hint-text" id="detailMapsHintText">
+                Semua lokasi (Lokasi 1, Lokasi 2, dst) beserta jam acara dan tautan Google Maps di atas otomatis tercantum di surat tugas WhatsApp seluruh kru bertugas (supir gaun, perias, fotografer, MC, dll).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= SECTION B: KRU ================= -->
+        <div class="detail-card crew-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="card-icon-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
+              <div>
+                <h2 class="card-title">B. Tim Kru & Vendor Bertugas</h2>
+                <p class="card-subtitle">Pilih dari Master Kru, hubungi, atau kirim rekap tugas personal via WhatsApp</p>
+              </div>
+            </div>
+            
+            <div class="header-button-group">
+              <button type="button" class="btn btn-gold-pill btn-sm" id="btnOpenSelectFromMasterModal" title="Pilih cepat dari database kru yang sudah ada">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 11 12 14 22 4"></polyline>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+                <span>Pilih dari Master Kru</span>
+              </button>
+
+              <button type="button" class="btn btn-secondary btn-sm" id="btnOpenAddCrewModal" title="Tambah kru kustom baru">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>+ Kru Baru</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="crew-body">
+            <!-- Crew List -->
+            <div class="crew-list" id="detailCrewList">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div class="empty-inline-state hidden" id="crewEmptyState">
+              <div class="empty-inline-icon">👥</div>
+              <div class="empty-inline-text">Belum ada kru bertugas di acara ini. Anda dapat memilih dari Database Master Kru dengan 1 klik!</div>
+              <button type="button" class="btn btn-primary btn-sm" id="btnChooseMasterFromEmpty">📋 Pilih dari Master Kru</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= SECTION C: CHECKLIST ================= -->
+        <div class="detail-card checklist-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="card-icon-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 11l3 3L22 4"></path>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+              </div>
+              <div>
+                <h2 class="card-title">C. Checklist Tugas & Progres</h2>
+                <p class="card-subtitle">Centang jika tugas selesai untuk menghitung progres real-time</p>
+              </div>
+            </div>
+            
+            <button type="button" class="btn btn-secondary btn-sm" id="btnApplyWOTemplate" title="Muat template checklist standar WO">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              <span>Template WO</span>
+            </button>
+          </div>
+
+          <div class="checklist-body">
+            <!-- Add Task Form Bar -->
+            <form id="formAddTask" class="task-add-bar">
+              <input type="text" id="inputNewTaskTitle" class="form-control" placeholder="Tulis tugas baru (cth: Cek pengiriman gaun & makeup jam 05.00)..." required>
+              <select id="selectNewTaskCategory" class="form-control category-select">
+                <option value="Persiapan">Persiapan</option>
+                <option value="Logistik">Logistik</option>
+                <option value="Vendor">Vendor</option>
+                <option value="Hari H">Hari H</option>
+                <option value="Administrasi">Administrasi</option>
+              </select>
+              <button type="submit" class="btn btn-primary btn-sm">
+                <span>Tambah</span>
+              </button>
+            </form>
+
+            <!-- Checklist Progress Header & Filter -->
+            <div class="checklist-stats-bar">
+              <div class="cs-left">
+                <span class="cs-ratio" id="checklistRatioDisplay">0 / 0 Selesai</span>
+                <span class="cs-badge" id="checklistBadgeDisplay">0%</span>
+              </div>
+              <div class="cs-filters">
+                <button type="button" class="cs-filter-btn active" data-filter="all">Semua</button>
+                <button type="button" class="cs-filter-btn" data-filter="pending">Belum</button>
+                <button type="button" class="cs-filter-btn" data-filter="completed">Selesai</button>
+              </div>
+            </div>
+
+            <!-- Task List Container -->
+            <div class="tasks-list" id="detailTasksList">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div class="empty-inline-state hidden" id="tasksEmptyState">
+              <div class="empty-inline-icon">📝</div>
+              <div class="empty-inline-text">Checklist masih kosong. Tambahkan tugas atau gunakan "Template WO" di atas.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= SECTION D: BAGIKAN INFO ================= -->
+        <div class="detail-card share-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <div class="card-icon-badge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+              </div>
+              <div>
+                <h2 class="card-title">D. Bagikan Info Rekap ke Kru</h2>
+                <p class="card-subtitle">Rekap lengkap jadwal, lokasi Google Maps, dan daftar kru untuk ditempel ke WhatsApp grup atau chat pribadi</p>
+              </div>
+            </div>
+
+            <div class="share-actions-top">
+              <button type="button" class="btn btn-primary btn-sm" id="btnCopyShareText">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Salin ke Clipboard</span>
+              </button>
+              <button type="button" class="btn btn-whatsapp btn-sm" id="btnQuickOpenBulkModal">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>⚡ Kirim Rekap ke Semua Kru</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="share-body">
+            <!-- Recipient Selector Bar -->
+            <div style="background: rgba(212, 175, 55, 0.08); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 8px; padding: 12px; margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+              <div style="font-weight: 700; font-size: 0.85rem; color: var(--gold-dark); display: flex; align-items: center; gap: 6px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <span>Tujuan Kirim:</span>
+              </div>
+              <select id="selectShareRecipient" class="form-control" style="flex: 1; min-width: 220px; font-size: 0.85rem; padding: 6px 10px;">
+                <option value="group">📢 Grup WhatsApp Kru (Pilih kontak manual di WA)</option>
+                <!-- Populated dynamically with assigned crew members -->
+              </select>
+              <button type="button" class="btn btn-whatsapp btn-sm" id="btnShareDirectWhatsApp">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.301-.15-1.78-.879-2.056-.98-.276-.1-.476-.15-.677.15-.2.301-.777.98-.953 1.18-.175.2-.351.226-.652.075-.301-.15-1.272-.469-2.423-1.496-.896-.799-1.501-1.786-1.677-2.087-.175-.301-.019-.464.132-.614.136-.135.301-.351.451-.527.151-.175.2-.301.301-.501.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.927-2.233-.244-.585-.492-.506-.677-.515-.175-.008-.376-.01-.577-.01-.2 0-.526.075-.802.376-.276.301-1.053 1.028-1.053 2.508 0 1.48 1.078 2.909 1.228 3.11.15.2 2.122 3.24 5.141 4.544.718.31 1.279.496 1.716.635.721.23 1.378.197 1.897.12.578-.087 1.78-.727 2.031-1.43.25-.702.25-1.304.175-1.43-.075-.125-.276-.2-.577-.35z"/>
+                  <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.17L2.05 21.95l4.908-1.332A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.2c-1.634 0-3.146-.46-4.433-1.258l-.317-.193-2.92.793.811-2.825-.213-.332A8.156 8.156 0 013.8 12c0-4.521 3.679-8.2 8.2-8.2s8.2 3.679 8.2 8.2-3.679 8.2-8.2 8.2z"/>
+                </svg>
+                <span id="labelShareButton">Buka WhatsApp</span>
+              </button>
+            </div>
+
+            <label for="textareaSharePreview" class="form-label">Teks Pesan Siap Kirim:</label>
+            <div class="share-textarea-wrapper">
+              <textarea id="textareaSharePreview" class="share-textarea" readonly rows="8"></textarea>
+            </div>
+            <div class="share-instructions">
+              <span class="badge-mini">CATATAN</span>
+              <span><strong>Kenapa saat WhatsApp terbuka tidak otomatis terkirim sendiri?</strong> Demi keamanan anti-spam oleh WhatsApp/Meta, web browser hanya boleh mengisi teks di kolom pesan. Anda cukup <strong>menekan tombol Kirim / Enter</strong> di WhatsApp. Jika ingin 100% otomatis tanpa sentuh tombol kirim, masukkan token Fonnte di modal <em>"Kirim Rekap ke Semua Kru"</em>.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODAL: FORM ACARA BARU / EDIT ==================== -->
+  <div class="modal-backdrop" id="modalEventBackdrop">
+    <div class="modal-dialog modal-event" role="dialog" aria-modal="true" aria-labelledby="modalEventTitle">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="modalEventTitle">Tambah Acara Pernikahan Baru</h2>
+          <p class="modal-subtitle">Isi data acara klien. Nama pasangan & tanggal wajib diisi.</p>
+        </div>
+        <button type="button" class="btn-close" id="btnCloseEventModal" aria-label="Tutup form">&times;</button>
+      </div>
+
+      <form id="formEvent">
+        <input type="hidden" id="inputEventId" value="">
+        <div class="modal-body">
+          
+          <div class="alert-box error hidden" id="eventValidationAlert">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-text" id="eventValidationAlertText">
+              Nama pasangan dan tanggal acara wajib diisi. Silakan lengkapi sebelum menyimpan.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputCoupleName" class="form-label">
+              Nama Pasangan Pengantin <span class="required-star">*</span>
+            </label>
+            <input type="text" id="inputCoupleName" class="form-control" placeholder="Contoh: Dimas & Anisa" autocomplete="off">
+            <span class="form-help">Wajib diisi</span>
+          </div>
+
+          <div class="form-group">
+            <label for="inputEventDate" class="form-label">
+              Tanggal Acara Pernikahan <span class="required-star">*</span>
+            </label>
+            <input type="date" id="inputEventDate" class="form-control">
+            <span class="form-help">Wajib diisi untuk kalkulasi hitung mundur H-n dan deteksi H-3</span>
+          </div>
+
+          <!-- SECTION MULTI-LOKASI ACARA (Lokasi 1, Lokasi 2, Lokasi 3...) -->
+          <div class="form-section-header-box" style="margin-top:16px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; background:#FAF6ED; padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--gold-200);">
+            <div>
+              <div style="font-weight:800; font-size:0.95rem; color:var(--gold-dark); display:flex; align-items:center; gap:6px;">
+                <span>📍 DAFTAR LOKASI ACARA</span>
+                <span class="badge-mini" style="background:var(--gold-200); color:var(--gold-dark); font-weight:800;" id="badgeLocationCount">1 Lokasi</span>
+              </div>
+              <p style="font-size:0.75rem; color:var(--ink-secondary); margin:2px 0 0 0;">Isi nomor/nama lokasi (1, 2, 3...), waktu acara, nama tempat, alamat, link maps, dan keterangan kondisional.</p>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btnAddLocationInForm" style="font-weight:800; font-size:0.8rem; background:#FFFFFF; border-color:var(--gold-400); color:var(--gold-dark);">
+              + Tambah Lokasi Berikutnya
+            </button>
+          </div>
+
+          <div id="eventLocationsContainer" class="event-locations-form-list">
+            <!-- Dynamic Location Item Cards (Lokasi 1, Lokasi 2, Lokasi 3...) -->
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelEventModal">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveEvent">
+            <span id="btnSaveEventLabel">Simpan & Buka Detail</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: PILIH DARI MASTER KRU (FAST SELECT) ==================== -->
+  <div class="modal-backdrop" id="modalSelectMasterCrewBackdrop">
+    <div class="modal-dialog modal-lg" role="dialog" aria-modal="true" aria-labelledby="modalSelectMasterCrewTitle">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="modalSelectMasterCrewTitle">Pilih Kru dari Master Database</h2>
+          <p class="modal-subtitle">Centang kru yang bertugas di acara ini (admin, supir kirim gaun, perias, fotografer, dll).</p>
+        </div>
+        <button type="button" class="btn-close" id="btnCloseSelectMasterModal" aria-label="Tutup dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="select-master-filter-bar">
+          <div class="search-input-wrapper" style="flex: 1;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="inputSearchInMasterModal" placeholder="Cari nama atau peran kru...">
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btnSelectAllInMasterModal">Pilih Semua</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btnDeselectAllInMasterModal">Batal Pilih</button>
+        </div>
+
+        <div class="master-crew-select-list" id="masterCrewSelectList">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="selected-count-label" id="labelSelectedMasterCount">0 kru terpilih</div>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-secondary" id="btnCancelSelectMasterModal">Batal</button>
+          <button type="button" class="btn btn-primary" id="btnConfirmAssignMasterCrew">Tugaskan ke Acara Ini</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: TAMBAH / EDIT MASTER KRU ==================== -->
+  <div class="modal-backdrop" id="modalMasterCrewBackdrop">
+    <div class="modal-dialog modal-sm" role="dialog" aria-modal="true" aria-labelledby="modalMasterCrewTitle">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="modalMasterCrewTitle">Tambah Anggota Master Kru</h2>
+          <p class="modal-subtitle">Data tersimpan di database dan dapat dipilih berulang kali untuk setiap acara.</p>
+        </div>
+        <button type="button" class="btn-close" id="btnCloseMasterCrewModal" aria-label="Tutup form">&times;</button>
+      </div>
+
+      <form id="formMasterCrew">
+        <input type="hidden" id="inputMasterCrewId" value="">
+        <div class="modal-body">
+          
+          <div class="alert-box error hidden" id="masterCrewValidationAlert">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-text" id="masterCrewValidationAlertText">Nama kru wajib diisi.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputMasterCrewName" class="form-label">Nama Kru / Vendor <span class="required-star">*</span></label>
+            <input type="text" id="inputMasterCrewName" class="form-control" placeholder="Cth: Mas Rudi (Supir Logistik)" required>
+          </div>
+
+          <div class="form-group">
+            <label for="selectMasterCrewRole" class="form-label">Peran / Spesialisasi Tugas</label>
+            <select id="selectMasterCrewRole" class="form-control">
+              <option value="Admin WO & Koordinator">Admin WO & Koordinator</option>
+              <option value="Asisten Lapangan / Runner">Asisten Lapangan / Runner</option>
+              <option value="Perias / MUA & Hairdo">Perias / MUA & Hairdo</option>
+              <option value="Fotografer & Video">Fotografer & Videografer</option>
+              <option value="Supir Logistik (Gaun & Makeup)">Supir Logistik (Kirim Gaun & Makeup)</option>
+              <option value="Supir Logistik (Hantaran & Sound)">Supir Logistik (Kirim Hantaran & Souvenir)</option>
+              <option value="MC (Master of Ceremony)">MC (Master of Ceremony)</option>
+              <option value="Dekorasi & Florist">Dekorasi & Florist</option>
+              <option value="Katering & F&B">Katering & F&B</option>
+              <option value="Sound & Akustik">Sound System & Musik</option>
+              <option value="Penghulu & KUA">Penghulu / Petugas KUA</option>
+              <option value="Busana & Wardrobe">Busana & Wardrobe</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="inputMasterCrewPhone" class="form-label">Nomor WhatsApp / HP</label>
+            <input type="tel" id="inputMasterCrewPhone" class="form-control" placeholder="Cth: 081234567890">
+            <span class="form-help">Untuk pengiriman rekap job otomatis via WhatsApp</span>
+          </div>
+
+          <div class="form-group">
+            <label for="inputMasterCrewEmail" class="form-label">Alamat Email (Opsional)</label>
+            <input type="email" id="inputMasterCrewEmail" class="form-control" placeholder="Cth: kru@vendor.com">
+          </div>
+
+          <div class="form-group">
+            <label for="inputMasterCrewNotes" class="form-label">Catatan Tambahan (Opsional)</label>
+            <input type="text" id="inputMasterCrewNotes" class="form-control" placeholder="Cth: Menggunakan mobil box / Standby dari subuh">
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelMasterCrewModal">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveMasterCrew">Simpan ke Master</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: TAMBAH KRU KUSTOM DI ACARA ==================== -->
+  <div class="modal-backdrop" id="modalCrewBackdrop">
+    <div class="modal-dialog modal-sm" role="dialog" aria-modal="true" aria-labelledby="modalCrewTitle">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="modalCrewTitle">Tambah Kru Bertugas</h2>
+          <p class="modal-subtitle">Daftarkan vendor atau kru khusus untuk acara ini.</p>
+        </div>
+        <button type="button" class="btn-close" id="btnCloseCrewModal" aria-label="Tutup form kru">&times;</button>
+      </div>
+
+      <form id="formCrew">
+        <input type="hidden" id="inputCrewId" value="">
+        <div class="modal-body">
+          
+          <div class="alert-box error hidden" id="crewValidationAlert">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-text" id="crewValidationAlertText">Nama kru wajib diisi.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputCrewName" class="form-label">Nama Kru / Vendor <span class="required-star">*</span></label>
+            <input type="text" id="inputCrewName" class="form-control" placeholder="Cth: Bagus Santoso" required>
+          </div>
+
+          <div class="form-group">
+            <label for="selectCrewRole" class="form-label">Peran / Tugas</label>
+            <select id="selectCrewRole" class="form-control">
+              <option value="Admin WO & Koordinator">Admin WO & Koordinator</option>
+              <option value="Asisten Lapangan / Runner">Asisten Lapangan / Runner</option>
+              <option value="Perias / MUA & Hairdo">Perias / MUA & Hairdo</option>
+              <option value="Fotografer & Video">Fotografer & Videografer</option>
+              <option value="Supir Logistik (Gaun & Makeup)">Supir Logistik (Kirim Gaun & Makeup)</option>
+              <option value="Supir Logistik (Hantaran & Sound)">Supir Logistik (Kirim Hantaran & Souvenir)</option>
+              <option value="MC (Master of Ceremony)">MC (Master of Ceremony)</option>
+              <option value="Dekorasi & Florist">Dekorasi & Florist</option>
+              <option value="Katering & F&B">Katering & F&B</option>
+              <option value="Sound & Akustik">Sound System & Musik</option>
+              <option value="Penghulu & KUA">Penghulu / Petugas KUA</option>
+              <option value="Busana & Wardrobe">Busana & Wardrobe</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="inputCrewPhone" class="form-label">Nomor HP / WhatsApp</label>
+            <input type="tel" id="inputCrewPhone" class="form-control" placeholder="Cth: 081234567890">
+            <span class="form-help">Untuk pengiriman rekap job personal via WhatsApp</span>
+          </div>
+
+          <div class="form-group">
+            <label for="inputCrewEmail" class="form-label">Alamat Email</label>
+            <input type="email" id="inputCrewEmail" class="form-control" placeholder="Cth: kru@vendor.com">
+          </div>
+
+          <!-- Opsi Otomatis Simpan ke Master Kru -->
+          <div class="checkbox-option-box">
+            <input type="checkbox" id="chkSaveToMasterAlso" checked>
+            <label for="chkSaveToMasterAlso">Simpan juga ke Database Master Kru agar bisa dipilih di acara lain</label>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelCrewModal">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveCrew">Simpan Kru</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: BROADCAST REKAP KE SEMUA KRU ==================== -->
+  <div class="modal-backdrop" id="modalBulkShareBackdrop">
+    <div class="modal-dialog modal-md" role="dialog" aria-modal="true" aria-labelledby="modalBulkShareTitle">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title" id="modalBulkShareTitle">Kirim Rekap Tugas ke WhatsApp Kru</h2>
+          <p class="modal-subtitle">Kirimkan rincian tugas spesifik, jadwal, dan link peta Google Maps langsung ke nomor WhatsApp seluruh kru.</p>
+        </div>
+        <button type="button" class="btn-close" id="btnCloseBulkShareModal" aria-label="Tutup dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 1-Click Auto Blast Action Banner -->
+        <div class="auto-blast-card">
+          <div class="abc-header">
+            <div>
+              <div class="abc-title">⚡ 1-Klik Kirim Otomatis ke Semua Kru</div>
+              <div class="abc-desc">Sistem akan otomatis memproses pengiriman rekap job dan link lokasi ke seluruh nomor WhatsApp kru yang bertugas.</div>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnStartAutoBlast">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <span>Mulai Kirim Otomatis</span>
+            </button>
+          </div>
+
+          <!-- Progress bar for auto blast -->
+          <div class="auto-blast-progress hidden" id="autoBlastProgressContainer">
+            <div class="ab-prog-text">
+              <span id="autoBlastStatusText">Memproses pengiriman...</span>
+              <strong id="autoBlastPct">0%</strong>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar-fill" id="autoBlastProgressBar" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- WhatsApp Gateway API Toggle (Opsional untuk pengiriman background 100% tanpa tab) -->
+          <div class="gateway-api-toggle-row">
+            <button type="button" class="btn-text-sm" id="btnToggleGatewaySettings">
+              ⚙️ Pengaturan WA Gateway API (Opsional: Kirim Background 100% Tanpa Buka Tab)
+            </button>
+          </div>
+
+          <div class="gateway-settings-box hidden" id="gatewaySettingsBox">
+            <div style="font-size:0.78rem; color:var(--ink-secondary); margin-bottom:8px;">
+              Jika Anda memiliki akun WA Gateway (seperti <strong>Fonnte</strong> / API Gateway lokal), masukkan token di bawah ini agar pesan langsung terkirim otomatis di latar belakang tanpa membuka tab browser:
+            </div>
+            <div class="form-group" style="margin-bottom:8px;">
+              <input type="text" id="inputWaGatewayToken" class="form-control" placeholder="Masukkan Token API Fonnte / Gateway (cth: aBcDeF12345...)" autocomplete="off">
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="form-help">Gratis & opsional. Jika kosong, sistem menggunakan Antrean Pintar otomatis tab WhatsApp.</span>
+              <button type="button" class="btn btn-secondary btn-sm" id="btnSaveGatewayToken">Simpan Token</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Crew Dispatch Queue List -->
+        <div style="font-size:0.85rem; font-weight:700; color:var(--ink-primary); margin:12px 0 8px;">Daftar Kru Penerima Pesan:</div>
+        <div class="bulk-crew-list" id="bulkShareCrewList">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelBulkShareModal">Tutup</button>
+        <button type="button" class="btn btn-whatsapp" id="btnCopyAllCrewSummary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Salin Teks Rekap Lengkap</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: OWNER SETTINGS & BRANDING ==================== -->
+  <div class="modal-backdrop" id="modalOwnerAdminBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalOwnerAdminTitle">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:12px; min-width:0; flex:1;">
+          <div class="card-icon" style="background:rgba(212,175,55,0.15); color:var(--gold-dark); width:42px; height:42px; font-size:1.3rem; flex-shrink:0;">⚙️</div>
+          <div style="min-width:0;">
+            <h3 class="modal-title" id="modalOwnerAdminTitle">Pengaturan Admin WO</h3>
+            <p class="modal-subtitle">Kelola identitas &amp; logo brand, nomor kontak WhatsApp Admin, serta kata sandi akun dalam satu tempat.</p>
+          </div>
+        </div>
+        <button type="button" class="btn-close" id="btnCloseOwnerAdminModal" aria-label="Tutup">&times;</button>
+      </div>
+
+      <!-- Quick Anchor Jump Navigation inside Modal -->
+      <div class="owner-modal-nav-tabs">
+        <button type="button" class="owner-tab-btn active" id="tabBtnBrandingSettings" data-panel="panelBrandingSettings">
+          <span>🎨 Identitas &amp; Logo</span>
+        </button>
+        <button type="button" class="owner-tab-btn" id="tabBtnAdminSettings" data-panel="panelAdminSettings">
+          <span>📱 Kontak Admin WA</span>
+        </button>
+        <button type="button" class="owner-tab-btn" id="tabBtnSecuritySettings" data-panel="panelSecuritySettings">
+          <span>🔒 Password Akun</span>
+        </button>
+        <button type="button" class="owner-tab-btn" id="tabBtnLicenseSettings" data-panel="panelLicenseSettings">
+          <span>📜 Status Lisensi Pro</span>
+        </button>
+      </div>
+
+      <div class="modal-body admin-modal-body">
+
+        <!-- ================= SEKSI 1: BRANDING & LOGO ================= -->
+        <div class="admin-section-divider-title" id="anchorBranding">
+          <span>🎨 1. IDENTITAS BRAND &amp; LOGO APLIKASI</span>
+        </div>
+        <div class="owner-panel" id="panelBrandingSettings">
+          <!-- Live Preview Box -->
+          <div class="brand-preview-card">
+            <div class="bpc-label">👁️ PREVIEW TAMPILAN HEADER APLIKASI:</div>
+            <div class="bpc-header-demo">
+              <div class="bpc-brand-icon" id="previewBrandIcon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+                </svg>
+              </div>
+              <div class="bpc-brand-text">
+                <span class="bpc-title" id="previewBrandTitle">Mahligai WO</span>
+                <span class="bpc-sub" id="previewBrandSubtitle">Wedding Organizer Management</span>
+              </div>
+            </div>
+            <div style="font-size:0.75rem; color:#64748B; margin-top:6px;">Logo &amp; nama ini otomatis ditampilkan di header navigasi, layar login, dokumen PDF resmi, dan pesan WhatsApp rekap kru.</div>
+          </div>
+
+          <form id="formBrandSettings" style="margin-top:16px;">
+            <div class="form-group">
+              <label for="inputBrandFullName" class="form-label">Nama Lengkap Wedding Organizer <span class="required">*</span></label>
+              <input type="text" id="inputBrandFullName" class="form-control" placeholder="Contoh: Mahligai Wedding Organizer" required>
+              <span class="form-help">Nama resmi ini digunakan di kop surat dokumen PDF dan surat tugas WhatsApp kru.</span>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="inputBrandShortName" class="form-label">Nama Pendek / Header HP <span class="required">*</span></label>
+                <input type="text" id="inputBrandShortName" class="form-control" placeholder="Contoh: Mahligai WO" required>
+                <span class="form-help">Nama ringkas agar tidak terpotong di layar smartphone sempit.</span>
+              </div>
+              <div class="form-group">
+                <label for="inputBrandTagline" class="form-label">Slogan / Subjudul Brand</label>
+                <input type="text" id="inputBrandTagline" class="form-control" placeholder="Contoh: Wedding Organizer Management">
+              </div>
+            </div>
+
+            <!-- Upload Logo Section -->
+            <div class="logo-uploader-card">
+              <div style="font-weight:700; font-size:0.9rem; color:var(--ink-primary); margin-bottom:6px;">Pilihan Logo / Ikon Brand:</div>
+              <div class="logo-uploader-layout">
+                <div class="logo-avatar-preview" id="boxLogoUploadPreview">
+                  <span id="logoPreviewPlaceholder" style="font-size:1.6rem;">👑</span>
+                  <img id="imgLogoUploadPreview" src="" alt="Logo" class="hidden" style="width:100%; height:100%; object-fit:contain; border-radius:inherit;">
+                </div>
+                <div style="flex:1; min-width:0;">
+                  <input type="file" id="inputBrandLogoFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none;">
+                  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btnTriggerLogoUpload" style="font-weight:700;">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                      </svg>
+                      <span>Unggah Gambar Logo</span>
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-sm" id="btnResetBrandLogo" style="color:#DC2626; font-size:0.8rem;">
+                      Reset ke Default
+                    </button>
+                  </div>
+                  <div style="font-size:0.75rem; color:#64748B; margin-top:6px;">Format file: PNG transparan, JPG, SVG, atau WEBP (Maks 3MB, otomatis dioptimalkan).</div>
+                </div>
+              </div>
+
+              <!-- Quick Emoji Icon Picker -->
+              <div style="margin-top:14px; padding-top:10px; border-top:1px dashed #CBD5E1;">
+                <div style="font-size:0.78rem; font-weight:700; color:#475569; margin-bottom:6px;">Atau pilih ikon cepat jika tidak punya file gambar:</div>
+                <div class="quick-icons-row">
+                  <button type="button" class="quick-icon-btn" data-icon="👑" title="Mahkota">👑</button>
+                  <button type="button" class="quick-icon-btn" data-icon="💍" title="Cincin">💍</button>
+                  <button type="button" class="quick-icon-btn" data-icon="💐" title="Bunga">💐</button>
+                  <button type="button" class="quick-icon-btn" data-icon="🏰" title="Istana">🏰</button>
+                  <button type="button" class="quick-icon-btn" data-icon="❤️" title="Hati">❤️</button>
+                  <button type="button" class="quick-icon-btn" data-icon="🕊️" title="Merpati">🕊️</button>
+                  <button type="button" class="quick-icon-btn" data-icon="✨" title="Kilau">✨</button>
+                  <button type="button" class="quick-icon-btn" data-icon="svg-heart" title="Hati Emas Standar">💖</button>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btnSaveBrandConfig" style="width:100%; min-height:46px; justify-content:center; font-weight:700; margin-top:16px;">
+              💾 Simpan Identitas &amp; Logo Brand WO
+            </button>
+          </form>
+        </div>
+
+        <!-- ================= SEKSI 2: NOMOR ADMIN WO ================= -->
+        <div class="admin-section-divider-title" id="anchorAdmin" style="margin-top:32px; padding-top:22px; border-top:2px dashed #CBD5E1;">
+          <span>📱 2. KONTAK NOMOR WHATSAPP ADMIN WO</span>
+        </div>
+        <div class="owner-panel" id="panelAdminSettings">
+          <!-- Active Admin 1 Highlight Box -->
+          <div class="admin-active-highlight-box" id="adminActiveHighlightBox">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Header Daftar Admin & Tombol Tambah -->
+          <div class="admin-section-header">
+            <div class="admin-section-title">Daftar Admin WO Terdaftar:</div>
+            <button type="button" class="btn btn-primary btn-sm btn-add-admin-trigger" id="btnOpenAddAdminForm">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Tambah Admin</span>
+            </button>
+          </div>
+
+          <!-- Form Tambah / Edit Admin (Collapsible) -->
+          <div id="containerAdminForm" class="hidden" style="background:#F8FAFC; border:1px solid #CBD5E1; border-radius:12px; padding:16px; margin-bottom:16px;">
+            <h4 id="formAdminTitle" style="font-size:0.95rem; font-weight:700; margin:0 0 12px; color:var(--ink-primary);">Tambah Admin Baru</h4>
+            <form id="formAdminData">
+              <input type="hidden" id="inputAdminId">
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label for="inputAdminName" class="form-label">Nama Lengkap Admin <span class="required">*</span></label>
+                  <input type="text" id="inputAdminName" class="form-control" placeholder="Contoh: Sarah Maharani" required>
+                </div>
+                <div class="form-group">
+                  <label for="inputAdminPhone" class="form-label">Nomor WhatsApp Admin <span class="required">*</span></label>
+                  <input type="tel" id="inputAdminPhone" class="form-control" placeholder="Contoh: 081234567890" required>
+                  <span class="form-help">Nomor ini yang akan dicantumkan secara otomatis ke aplikasi.</span>
+                </div>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label for="inputAdminEmail" class="form-label">Email Admin (Opsional)</label>
+                  <input type="email" id="inputAdminEmail" class="form-control" placeholder="Contoh: sarah@mahligaiwo.com">
+                </div>
+                <div class="form-group" style="display:flex; align-items:center; padding-top:16px;">
+                  <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.85rem; font-weight:600; color:var(--ink-primary);">
+                    <input type="checkbox" id="checkIsPrimaryAdmin" style="width:18px; height:18px; accent-color:var(--gold-primary);">
+                    <span>⭐ Jadikan sebagai <strong>Admin 1 (Utama)</strong></span>
+                  </label>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+                <button type="button" class="btn btn-secondary btn-sm" id="btnCancelAdminForm">Batal</button>
+                <button type="submit" class="btn btn-primary btn-sm" id="btnSaveAdminData">Simpan Admin</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- List of Admins -->
+          <div class="admin-cards-list" id="ownerAdminCardsList">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- ================= SEKSI 3: SECURITY / PASSWORD ================= -->
+        <div class="admin-section-divider-title" id="anchorSecurity" style="margin-top:32px; padding-top:22px; border-top:2px dashed #CBD5E1;">
+          <span>🔒 3. KEAMANAN &amp; KATA SANDI AKUN</span>
+        </div>
+        <div class="owner-panel" id="panelSecuritySettings">
+          <div style="background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:12px; padding:18px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+              <div style="font-size:1.4rem;">🔒</div>
+              <div>
+                <h4 style="font-size:0.95rem; font-weight:800; color:var(--ink-primary); margin:0;">Ganti Password Akun Masuk</h4>
+                <p style="font-size:0.78rem; color:var(--ink-secondary); margin:2px 0 0 0;">Password ini digunakan untuk mengamankan dan membuka kunci aplikasi.</p>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:12px;">
+              <label for="inputNewOwnerPassword" class="form-label">Password Baru:</label>
+              <input type="password" id="inputNewOwnerPassword" class="form-control" placeholder="Minimal 4 karakter">
+            </div>
+
+            <div class="form-group" style="margin-bottom:14px;">
+              <label for="inputConfirmOwnerPassword" class="form-label">Ulangi Password Baru:</label>
+              <input type="password" id="inputConfirmOwnerPassword" class="form-control" placeholder="Ketik ulang password baru">
+            </div>
+
+            <button type="button" class="btn btn-primary" id="btnSaveNewOwnerPassword" style="width:100%; min-height:44px; justify-content:center; font-weight:700;">
+              Simpan Password Baru
+            </button>
+
+            <!-- Backup & Restore Data (Laptop ⇄ Smartphone Sync) -->
+            <div style="margin-top:20px; padding-top:16px; border-top:1.5px dashed #CBD5E1;">
+              <h5 style="font-size:0.9rem; font-weight:800; color:var(--ink-primary); margin:0 0 4px 0; display:flex; align-items:center; gap:6px;">
+                <span>📦</span> <span>Pindahkan &amp; Cadangkan Data (Laptop ⇄ HP)</span>
+              </h5>
+              <p style="font-size:0.78rem; color:var(--ink-secondary); margin:0 0 10px 0; line-height:1.4;">
+                Gunakan fitur ini untuk memindahkan seluruh data acara, daftar kru, admin, dan identitas brand antara laptop dan smartphone Anda.
+              </p>
+
+              <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                <button type="button" class="btn btn-outline-gold btn-sm" id="btnExportDataBackup" style="flex:1; justify-content:center; min-height:40px; font-weight:700;">
+                  <span>💾 Cadangkan Data (.json)</span>
+                </button>
+                <label class="btn btn-secondary btn-sm" style="flex:1; justify-content:center; min-height:40px; font-weight:700; cursor:pointer; margin:0; display:inline-flex; align-items:center;">
+                  <span>📥 Pulihkan Data (.json)</span>
+                  <input type="file" id="inputImportDataBackup" accept=".json,application/json" style="display:none;">
+                </label>
+              </div>
+              <div style="font-size:0.75rem; color:var(--gold-dark); margin-top:8px; line-height:1.4;">
+                💡 <strong>Cara Pakai:</strong> Klik <em>"Cadangkan Data"</em> di laptop, kirim file <code>.json</code> ke WhatsApp HP sendiri, lalu buka aplikasi di HP dan pilih <em>"Pulihkan Data"</em>.
+              </div>
+            </div>
+
+            <!-- Factory Reset / Clean Scratch Option -->
+            <div style="margin-top:20px; padding-top:16px; border-top:1px dashed #E2E8F0;">
+              <h5 style="font-size:0.88rem; font-weight:700; color:#DC2626; margin:0 0 6px 0; display:flex; align-items:center; gap:6px;">
+                <span>⚠️</span> <span>Reset Bersih Seluruh Data Aplikasi</span>
+              </h5>
+              <p style="font-size:0.78rem; color:var(--ink-secondary); margin:0 0 10px 0; line-height:1.4;">
+                Gunakan tombol ini jika Anda ingin mengosongkan kembali seluruh data acara, daftar kru, admin, dan identitas brand untuk memulai uji coba dari nol seperti aplikasi baru dibeli.
+              </p>
+              <button type="button" class="btn btn-secondary" id="btnFactoryResetApp" style="width:100%; min-height:40px; justify-content:center; color:#DC2626; border-color:#FECACA; background:#FEF2F2; font-weight:700; font-size:0.85rem;">
+                🔄 Reset Bersih Seluruh Data (Mulai dari Nol)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= SEKSI 4: LISENSI APLIKASI ================= -->
+        <div class="admin-section-divider-title" id="anchorLicense" style="margin-top:32px; padding-top:22px; border-top:2px dashed #CBD5E1;">
+          <span>📜 4. STATUS LISENSI RESMI APLIKASI</span>
+        </div>
+        <div class="owner-panel" id="panelLicenseSettings">
+          <div class="license-status-box" id="adminLicenseStatusBox" style="background:#F0FDF4; border:1.5px solid #86EFAC; border-radius:12px; padding:18px;">
+            <!-- Rendered dynamically by app.js -->
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelOwnerAdminModal" style="width:100%; justify-content:center;">Tutup Pengaturan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL PANDUAN INSTALASI HP (IPHONE & ANDROID) ==================== -->
+  <div class="modal-backdrop" id="iosInstallModal">
+    <div class="modal-dialog modal-md">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <img src="icons/icon-192.png" alt="Mahligai WO" style="width: 36px; height: 36px; border-radius: 8px; box-shadow: var(--shadow-sm);">
+          <div>
+            <h3 class="modal-title">Pasang Mahligai WO di HP</h3>
+            <p class="modal-subtitle">Aplikasi offline tanpa kuota di iPhone &amp; Android</p>
+          </div>
+        </div>
+        <button type="button" class="btn-close" id="btnCloseIosInstallModal" aria-label="Tutup">&times;</button>
+      </div>
+      <div class="modal-body" style="line-height: 1.6; font-size: 0.92rem; color: var(--ink-secondary);">
+        <!-- Akses Beda Jaringan Notice -->
+        <div style="background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+          <strong style="color: #166534; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+            <span>🌐</span> <span>Bisa Diakses dari Mana Saja (Beda Jaringan / Paket Data):</span>
+          </strong>
+          <p style="margin: 0; font-size: 0.82rem; color: #15803D;">
+            Aplikasi ini sudah berstandar PWA resmi. Anda dapat meng-hosting folder ini secara <strong>gratis &amp; permanen</strong> di <em>Netlify Drop, Vercel, atau GitHub Pages</em>, atau gunakan file <code>Buka_Akses_Online_HP.bat</code> di laptop untuk mendapatkan tautan HTTPS langsung!
+          </p>
+        </div>
+
+        <div style="background: var(--gold-50); border: 1px solid var(--gold-200); border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+          <strong style="color: var(--gold-dark); display: block; margin-bottom: 6px;">📱 Untuk Pengguna iPhone (Apple Safari):</strong>
+          <ol style="margin: 0; padding-left: 20px; font-size: 0.85rem;">
+            <li>Buka link aplikasi di browser <strong>Safari</strong> (bukan Chrome di iOS).</li>
+            <li>Ketuk tombol <strong>Bagikan / Share</strong> (ikon kotak dengan panah ke atas <span style="font-size: 1.1rem;">⎋</span>) di bagian bawah layar.</li>
+            <li>Geser menu ke bawah dan pilih <strong>"Tambah ke Layar Utama" (Add to Home Screen)</strong> ➕.</li>
+            <li>Ketuk <strong>"Tambah"</strong> di sudut kanan atas. Ikon aplikasi langsung muncul di layar depan iPhone Anda!</li>
+          </ol>
+        </div>
+
+        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+          <strong style="color: var(--ink-primary); display: block; margin-bottom: 6px;">🤖 Untuk Pengguna Android (Google Chrome):</strong>
+          <ol style="margin: 0; padding-left: 20px; font-size: 0.85rem;">
+            <li>Buka link aplikasi di browser <strong>Google Chrome</strong>.</li>
+            <li>Ketuk pop-up <strong>"Pasang aplikasi" (Install app)</strong> yang otomatis muncul di bawah.</li>
+            <li>Atau ketuk ikon titik tiga (<strong>⋮</strong>) di sudut kanan atas Chrome, lalu pilih <strong>"Pasang aplikasi"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.</li>
+          </ol>
+        </div>
+
+        <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 12px; display: flex; align-items: flex-start; gap: 8px; font-size: 0.82rem; color: #B45309;">
+          <span style="font-size: 1.1rem;">💡</span>
+          <span><strong>100% Offline Tanpa Kuota:</strong> Setelah terpasang, aplikasi tetap dapat dibuka dan digunakan dengan lancar di HP meski tidak ada sinyal internet.</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btnGotItIosInstall" style="width: 100%; justify-content: center;">
+          <span>Mengerti, Tutup Panduan</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+</body>
+</html>
