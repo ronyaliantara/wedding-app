@@ -1,24 +1,25 @@
-const CACHE_NAME = 'mahligai-wo-pwa-v11';
+const CACHE_NAME = 'mahligai-wo-pwa-v20';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './css/style.css',
-  './js/app.js',
+  './css/style.css?v=20',
+  './js/app.js?v=20',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
 
-// Install: Cache all core assets
+// Install: Cache core assets and immediately activate
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
-// Activate: Clean up older caches
+// Activate: Immediately claim clients and purge old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -33,22 +34,15 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: Cache-First strategy with Network fallback
+// Fetch: Network-First strategy with Cache fallback for instant updates
 self.addEventListener('fetch', (event) => {
-  // Hanya tangani request GET http/https
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
-  
-  // Abaikan request eksternal / tracking jika ada
   if (!url.protocol.startsWith('http')) return;
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        // Cache file lokal yang berhasil di-fetch
+    fetch(event.request)
+      .then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -56,12 +50,15 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return networkResponse;
-      }).catch(() => {
-        // Jika offline dan buka index.html
-        if (event.request.headers.get('accept')?.includes('text/html')) {
-          return caches.match('./index.html');
-        }
-      });
-    })
+      })
+      .catch(() => {
+        // Offline: Serve from cache
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) return cachedResponse;
+          if (event.request.headers.get('accept')?.includes('text/html')) {
+            return caches.match('./index.html') || caches.match('./');
+          }
+        });
+      })
   );
 });

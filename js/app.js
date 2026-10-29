@@ -4663,6 +4663,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
         .then((reg) => {
+          reg.update(); // Force checking for sw.js updates every time page loads!
           console.log('Mahligai WO PWA Service Worker aktif: ', reg.scope);
         })
         .catch((err) => {
