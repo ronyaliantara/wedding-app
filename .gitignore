@@ -2,10 +2,11 @@
 generator-lisensi-admin.html
 Buka_Generator_Lisensi_Admin.bat
 
-# Exclude zip distributions
+# Exclude zip distributions and unzipped packages
 *.zip
 *.tar.gz
 *.rar
+Aplikasi_Wedding_Organizer_Siap_Jual/
 
 # Exclude OS & editor cache
 .DS_Store
